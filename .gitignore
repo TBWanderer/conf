@@ -1,0 +1,23 @@
+# Nix build outputs
+/result
+/result-*
+
+# Secrets (if any)
+secrets/
+*.age
+*.key
+
+# Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+
+# Temporary files
+*.tmp
+*.bak
+*.old
