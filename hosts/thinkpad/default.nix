@@ -1,9 +1,10 @@
 # hosts/thinkpad/default.nix - ThinkPad X1 Carbon Gen 13 Aura
-{ lib, pkgs, config, ... }:
+{ lib, pkgs, config, modulesPath, ... }:
 
 {
   imports = [
-    ./hardware-configuration.nix
+    (modulesPath + "/installer/scan/not-detected.nix")
+    ./disko.nix
     ../../modules/hardware
   ];
 
@@ -11,6 +12,15 @@
   # HOST IDENTITY
   # ============================================================================
   networking.hostName = "thinkpad";
+
+  # ============================================================================
+  # HARDWARE DETECTION
+  # ============================================================================
+  boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "sd_mod" ];
+  boot.kernelModules = [ "kvm-intel" ];
+  
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   # ============================================================================
   # HARDWARE CONFIGURATION
@@ -31,12 +41,6 @@
     "i915.enable_fbc=1"           # Framebuffer compression
     "i915.enable_psr=1"           # Panel self refresh
   ];
-  
-  # Smaller swap for ultrabook
-  swapDevices = lib.mkForce [{
-    device = "/var/lib/swapfile";
-    size = 8 * 1024;  # 8 GB
-  }];
 
   # ============================================================================
   # DESKTOP ENVIRONMENT

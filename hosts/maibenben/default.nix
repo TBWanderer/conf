@@ -1,9 +1,10 @@
 # hosts/maibenben/default.nix - Maibenben x525 with NVIDIA 4060
-{ lib, pkgs, config, ... }:
+{ lib, pkgs, config, modulesPath, ... }:
 
 {
   imports = [
-    ./hardware-configuration.nix
+    (modulesPath + "/installer/scan/not-detected.nix")
+    ./disko.nix
     ../../modules/hardware
   ];
 
@@ -11,6 +12,15 @@
   # HOST IDENTITY
   # ============================================================================
   networking.hostName = "maibenben";
+
+  # ============================================================================
+  # HARDWARE DETECTION
+  # ============================================================================
+  boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "usb_storage" "usbhid" "sd_mod" ];
+  boot.kernelModules = [ "kvm-intel" ];
+  
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   # ============================================================================
   # HARDWARE CONFIGURATION
@@ -23,12 +33,6 @@
     nvidiaBusId = "PCI:1:0:0";
     primeOffload = true;
   };
-  
-  # Swap
-  swapDevices = lib.mkForce [{
-    device = "/var/lib/swapfile";
-    size = 16 * 1024;  # 16 GB
-  }];
 
   # ============================================================================
   # DESKTOP ENVIRONMENT
