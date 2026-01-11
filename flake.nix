@@ -84,8 +84,8 @@
     in
     {
       nixosConfigurations = {
-        beast = mkHost "beast";
-        carbon = mkHost "carbon";
+        maibenben = mkHost "maibenben";
+        thinkpad = mkHost "thinkpad";
       };
       
       # Development shells for different tasks
